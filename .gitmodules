@@ -1,0 +1,6 @@
+[submodule "submodule/PythonEditor"]
+	path = submodule/PythonEditor
+	url = https://github.com/bbcmicrobit/PythonEditor
+[submodule "submodule/micropython"]
+	path = submodule/micropython
+	url = https://github.com/bbcmicrobit/micropython
