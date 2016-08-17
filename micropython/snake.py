@@ -1,7 +1,11 @@
 from microbit import *
 from random import *
 
-snake = [[0,0] for i in range(5)]
+def new_food(snake):
+	while True:
+		food = [randint(0,4), randint(0,4)]
+		if not food in snake: return food
+
 
 def choose(snake):
 	head_row = snake[0][0]
@@ -26,24 +30,31 @@ def new_head(snake, direction):
 def move(snake, direction):
 	return [new_head(snake, direction)] + snake[0:-1]
 
-def show(snake):
+def show(snake, food):
 	array = [[0 for i in range(5)] for i in range(5)]
 	for part in snake:
-		array[part[0]][part[1]] = 9
+		array[part[0]][part[1]] = 5
+	array[food[0]][food[1]] = 9
 	string = ':'.join(''.join(str(cell) for cell in row) for row in array)
 	image = Image(string)
 	display.show(image)
 
-# count = 10
+snake = [[0,0]]
+food = new_food(snake)
+count = 10
 
 while True:
-	show(snake)
+	show(snake, food)
 	direction = choose(snake)
 	if not direction:
-		snake = [[0,0] for i in range(5)]
+		snake = [[0,0]]
 		direction = choose(snake)
+	tail = snake[-1]
 	snake = move(snake, direction)
-	# count -= 1
+	if snake[0] == food:
+		food = new_food(snake)
+		snake += [tail]
+	count -= 1
 	# if count <= 0: exit(1)
 	sleep(100)
 
