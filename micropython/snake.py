@@ -6,7 +6,6 @@ def new_food(snake):
 		food = [randint(0,4), randint(0,4)]
 		if not food in snake: return food
 
-
 def choose(snake):
 	head_row = snake[0][0]
 	head_col = snake[0][1]
@@ -39,22 +38,19 @@ def show(snake, food):
 	image = Image(string)
 	display.show(image)
 
-snake = [[0,0]]
+start_length = 2
+snake = [[0,0] for i in range(start_length)]
 food = new_food(snake)
-count = 10
 
 while True:
 	show(snake, food)
 	direction = choose(snake)
 	if not direction:
-		snake = [[0,0]]
+		snake = [[0,0] for i in range(start_length)]
 		direction = choose(snake)
 	tail = snake[-1]
 	snake = move(snake, direction)
 	if snake[0] == food:
 		food = new_food(snake)
 		snake += [tail]
-	count -= 1
-	# if count <= 0: exit(1)
-	sleep(100)
 
