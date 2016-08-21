@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 
 def sleep(ms):
 	time.sleep(ms/1000)
@@ -11,4 +12,9 @@ class Display:
 		print(image)
 
 display = Display()
+
+
+microbit_start_time = datetime.now()
+def running_time():
+	return (datetime.now() - microbit_start_time).microseconds
 
