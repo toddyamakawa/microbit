@@ -1,6 +1,16 @@
+
 import sys
 import time
 from datetime import datetime
+
+class Microbit:
+
+	# --- Timer ---
+	start = time.time()
+	@classmethod
+	def elapsed(self):
+		return int(1000*(time.time() - self.start))
+
 
 def sleep(ms):
 	time.sleep(ms/1000.0)
@@ -43,8 +53,6 @@ class Display:
 
 display = Display()
 
-
-microbit_start_time = datetime.now()
 def running_time():
-	return (datetime.now() - microbit_start_time).microseconds
+	return Microbit.elapsed()
 
