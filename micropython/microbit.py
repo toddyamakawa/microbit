@@ -1,7 +1,5 @@
 
-import sys
-import time
-from datetime import datetime
+import sys, tty, termios, time
 
 class Microbit:
 
@@ -11,6 +9,13 @@ class Microbit:
 	def elapsed(self):
 		return int(1000*(time.time() - self.start))
 
+	def getch():
+		fd = sys.stdin.fileno()
+		old_settings = termios.tcgetattr(fd)
+		tty.setraw(sys.stdin.fileno())
+		ch = sys.stdin.read(1)
+		termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+		return ch
 
 def sleep(ms):
 	time.sleep(ms/1000.0)
@@ -19,31 +24,32 @@ def Image(string):
 	return string
 
 class Display:
-	def show(self, image):
 
-		# Colors
-		reset = "\033[0m"
-		bright = "\033[101;91m"
-		dim = "\033[41;31m"
-		off = "\033[8m"
-		clear = "\033c"
+	# Colors
+	reset = "\033[0m"
+	bright = "\033[101;91m"
+	dim = "\033[41;31m"
+	off = "\033[8m"
+	clear = "\033c"
+
+	def show(self, image):
 
 		# Display format
 		width = 2
 		empty_row = '|' + ' '*(5*(1+width)+1) + "|\n"
 		header_row = '+' + '-'*(5*(1+width)+1) + "+\n"
 
-		sys.stdout.write(clear)
+		sys.stdout.write(self.clear)
 		sys.stdout.write(header_row)
 		for row in image.split(':'):
 			sys.stdout.write('| ')
 			for col in list(row):
 				if(int(col) == 0):
-					col = off + col + reset
+					col = self.off + col + self.reset
 				elif(int(col) >= 6):
-					col = bright + col + reset
+					col = self.bright + col + self.reset
 				else:
-					col = dim + col + reset
+					col = self.dim + col + self.reset
 				sys.stdout.write(col*width + ' ')
 			sys.stdout.write("|\n")
 			sys.stdout.write(empty_row)
