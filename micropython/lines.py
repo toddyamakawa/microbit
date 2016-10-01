@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from microbit import *
 from random import *
 
@@ -21,7 +22,7 @@ def show(points):
 	image = Image(string)
 	display.show(image)
 
-speed = 1000
+speed = 100
 while True:
 	for col in range(2,5):
 		show(line(2, 2, 0, col))

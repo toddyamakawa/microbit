@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from microbit import *
 from random import *
 
