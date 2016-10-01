@@ -1,5 +1,14 @@
 
 import sys, tty, termios, time
+from threading import Timer
+
+# ===========================
+#    MICROPYTHON FUNCTIONS
+# ===========================
+# Display.show(image)
+# image = Image(string)
+# ms = running_time()
+# sleep(ms)
 
 class Microbit:
 
@@ -9,13 +18,32 @@ class Microbit:
 	def elapsed(self):
 		return int(1000*(time.time() - self.start))
 
-	def getch():
-		fd = sys.stdin.fileno()
-		old_settings = termios.tcgetattr(fd)
+
+class Buttons:
+
+	buttons = dict()
+
+	# --- Get Character ---
+	fd = sys.stdin.fileno()
+	attr = termios.tcgetattr(fd)
+	@classmethod
+	def getch(self):
 		tty.setraw(sys.stdin.fileno())
 		ch = sys.stdin.read(1)
-		termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+		termios.tcsetattr(self.fd, termios.TCSADRAIN, self.attr)
 		return ch
+
+	@classmethod
+	def monitor(self):
+		key = ord(self.getch())
+		self.buttons
+		if not key in self.buttons: self.buttons[key] = 0
+		self.buttons[key] += 1
+		print("key: " + str(key))
+		if key == 3: return
+		Timer(0, self.monitor).start()
+
+Timer(0, Buttons.monitor).start()
 
 def sleep(ms):
 	time.sleep(ms/1000.0)
@@ -58,6 +86,7 @@ class Display:
 		sleep(100)
 
 display = Display()
+
 
 def running_time():
 	return Microbit.elapsed()
