@@ -1,6 +1,7 @@
 
 import sys, tty, termios, time
 from threading import Timer
+from Queue import Queue
 
 # ===========================
 #    MICROPYTHON FUNCTIONS
@@ -19,6 +20,8 @@ class Microbit:
 		return int(1000*(time.time() - self.start))
 
 
+buttons_queue = Queue()
+
 class Buttons:
 
 	buttons = dict()
@@ -33,16 +36,39 @@ class Buttons:
 		termios.tcsetattr(self.fd, termios.TCSADRAIN, self.attr)
 		return ch
 
+	# --- Monitor Key Presses ---
 	@classmethod
 	def monitor(self):
 		key = ord(self.getch())
-		self.buttons
-		if not key in self.buttons: self.buttons[key] = 0
-		self.buttons[key] += 1
-		print("key: " + str(key))
+		buttons_queue.put(key)
+		# print("key: " + str(key))
 		if key == 3: return
 		Timer(0, self.monitor).start()
 
+	@classmethod
+	def read(self):
+		while not buttons_queue.empty():
+			key = buttons_queue.get()
+			if not key in self.buttons: self.buttons[key] = 0
+			self.buttons[key] += 1
+			# print(str(key) + ": " + str(self.buttons[key]))
+
+
+	# --- Initialization ---
+	def __init__(self, key):
+		if type(key) is str: key = ord(key)
+		self.key = key
+		self.buttons[self.key] = 0
+
+	def get_presses(self):
+		key = self.key
+		Buttons.read()
+		presses = self.buttons[key]
+		self.buttons[key] = 0
+		return presses
+
+button_a = Buttons('a')
+button_b = Buttons('b')
 Timer(0, Buttons.monitor).start()
 
 def sleep(ms):
