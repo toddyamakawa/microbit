@@ -90,8 +90,8 @@ class Display:
 
 		# Display format
 		width = 2
-		empty_row = '|' + ' '*(5*(1+width)+1) + "|\n"
-		header_row = '+' + '-'*(5*(1+width)+1) + "+\n"
+		empty_row = '|' + ' '*(5*(1+width)+1) + "|\r\n"
+		header_row = '+' + '-'*(5*(1+width)+1) + "+\r\n"
 
 		sys.stdout.write(self.clear)
 		sys.stdout.write(header_row)
@@ -105,7 +105,7 @@ class Display:
 				else:
 					col = self.dim + col + self.reset
 				sys.stdout.write(col*width + ' ')
-			sys.stdout.write("|\n")
+			sys.stdout.write("|\r\n")
 			sys.stdout.write(empty_row)
 		sys.stdout.write(header_row)
 		sys.stdout.flush
