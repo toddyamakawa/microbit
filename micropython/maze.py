@@ -23,19 +23,13 @@ stack = [[2*randint(0,maze_rows-1)+1, 2*randint(0,maze_cols-1)+1]]
 def four_walls(row, col):
 	if row < 1 or col < 1 or row > 2*maze_rows or col > 2*maze_cols:
 		return 0
-
-	walls = 0
-	if maze[row-1][col  ]: walls += 1
-	if maze[row  ][col-1]: walls += 1
-	if maze[row+1][col  ]: walls += 1
-	if maze[row  ][col+1]: walls += 1
-	return walls == 4
+	return maze[row-1][col] and maze[row][col-1] and maze[row+1][col] and maze[row][col+1]
 
 while(stack):
-	dirs = []
 	row = stack[0][0]
 	col = stack[0][1]
 
+	dirs = []
 	if four_walls(row-2, col  ): dirs += [[-1, 0]]
 	if four_walls(row+2, col  ): dirs += [[+1, 0]]
 	if four_walls(row  , col-2): dirs += [[ 0,-1]]
@@ -48,7 +42,5 @@ while(stack):
 	else:
 		del stack[0]
 
-
 print_maze(maze)
-
 
