@@ -18,7 +18,7 @@ def print_maze(maze):
 def pixel(row, col):
 	if row < 0 or col < 0 or row > 2*maze_rows or col > 2*maze_cols:
 		return 0
-	return 6*maze[row][col]
+	return maze[row][col]
 
 # --- Get Tilt ---
 def get_tilt():
@@ -47,9 +47,11 @@ def display_maze(row, col):
 		# array += [[pixel(i,j) for j in range(col-2, col+3)]]
 		r = []
 		for j in range(col-2, col+3):
-			r += [pixel(i, j)]
+			p = 6 * pixel(i, j)
+			if i == my_row and j == my_col:
+				p = 2
+			r += [p]
 		array += [r]
-	array[2][2] = 2
 	string = ':'.join(''.join(str(cell) for cell in row) for row in array)
 	image = Image(string)
 	display.show(image)
@@ -82,13 +84,20 @@ while(stack):
 	else:
 		del stack[0]
 
-row = 1
-col = 1
+my_row = 1
+my_col = 1
+display_row = 1
+display_col = 1
 while True:
-	display_maze(row,col)
+	display_maze(display_row, display_col)
+	move = get_tilt()
 	if(button_a.get_presses() > 0):
-		move = get_tilt()
-		row += move[0]
-		col += move[1]
+		my_row += move[0]
+		my_col += move[1]
+		display_row = my_row
+		display_col = my_col
+	if(button_b.get_presses() > 0):
+		display_row += move[0]
+		display_col += move[1]
 	sleep(10)
 
