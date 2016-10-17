@@ -92,8 +92,10 @@ while True:
 	display_maze(display_row, display_col)
 	move = get_tilt()
 	if(button_a.get_presses() > 0):
-		my_row += move[0]
-		my_col += move[1]
+		if [my_row, my_col] == [display_row, display_col]:
+			if not maze[my_row+move[0]][my_col+move[1]]:
+				my_row += move[0]
+				my_col += move[1]
 		display_row = my_row
 		display_col = my_col
 	if(button_b.get_presses() > 0):
