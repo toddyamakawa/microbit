@@ -1,5 +1,6 @@
 #!/usr/bin/python
 from microbit import *
+import music
 from random import *
 
 def four_walls(row, col):
@@ -57,8 +58,8 @@ def display_maze(row, col):
 	display.show(image)
 
 # --- Generate Grid ---
-maze_rows = 5
-maze_cols = 5
+maze_rows = 6
+maze_cols = 6
 maze = [[1 for i in range(2*maze_rows+1)] for i in range(2*maze_cols+1)]
 for row in range(1, 2*maze_rows, 2):
 	for col in range(1, 2*maze_cols, 2):
@@ -88,12 +89,15 @@ my_row = 1
 my_col = 1
 display_row = 1
 display_col = 1
+fail_tune = ['C4:2']
 while True:
 	display_maze(display_row, display_col)
 	move = get_tilt()
 	if(button_a.get_presses() > 0):
 		if [my_row, my_col] == [display_row, display_col]:
-			if not maze[my_row+move[0]][my_col+move[1]]:
+			if maze[my_row+move[0]][my_col+move[1]]:
+				music.play(fail_tune)
+			else:
 				my_row += move[0]
 				my_col += move[1]
 		display_row = my_row
