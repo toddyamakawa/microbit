@@ -71,7 +71,9 @@ tilt_x += [[-200, 'E']]
 tilt_x += [[ 200, 'F']]
 tilt_x += [[ 500, 'G']]
 tilt_x += [[ 700, 'A']]
-tilt_x += [[1000, 'B']]
+tilt_x += [[1024, 'B']]
+
+song = []
 
 start_time = running_time()
 while True:
@@ -83,19 +85,22 @@ while True:
 			note = t[1]
 			break
 
-	accidental = ''
-	if y < -200 and note in sharp: accidental = '#'
-	if y > 200 and note in flat: accidental = 'b'
+	if y < -200 and note in sharp: note += '#'
+	elif y > 200 and note in flat: note += 'b'
 
-	note = note + accidental
+	display.show(Image(letters[note]))
 
-	string = letters[note]
-	display.show(Image(string))
 
 	if(button_a.get_presses() != 0):
+		song += [[note, '4']]
 		music.pitch(notes[note + '4'], 500)
-
-	if(button_b.get_presses() != 0):
+	elif(button_b.get_presses() != 0):
+		song += [[note, '5']]
 		music.pitch(notes[note + '5'], 500)
-
+	elif accelerometer.was_gesture('face down'):
+		for note in song:
+			music.pitch(notes[note[0] + note[1]], 500)
+			display.show(Image(letters[note[0]]))
+	elif accelerometer.was_gesture('shake'):
+		del song[-1]
 
