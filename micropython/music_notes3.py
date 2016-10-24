@@ -24,6 +24,8 @@ letters['Gb'] = "99900:90000:90000:90900:99909"
 letters['Ab'] = "09000:90900:99900:90900:90909"
 letters['Bb'] = "99000:90900:99000:90900:99009"
 
+letters['X'] = "90009:09090:00900:09090:90009"
+
 notes = {}
 notes['C4' ] = 262
 notes['C#4'] = 277
@@ -79,28 +81,37 @@ start_time = running_time()
 while True:
 	x = accelerometer.get_x()
 	y = accelerometer.get_y()
+	a = button_a.get_presses()
+	b = button_b.get_presses()
 
+	# Get note
 	for t in tilt_x:
 		if x < t[0]:
 			note = t[1]
 			break
-
-	if y < -200 and note in sharp: note += '#'
+	if y > 700: note = 'X'
 	elif y > 200 and note in flat: note += 'b'
+	elif y < -200 and note in sharp: note += '#'
 
 	display.show(Image(letters[note]))
 
+	if(a): pitch = [note, '4']
+	elif(b): pitch = [note, '5']
 
-	if(button_a.get_presses() != 0):
-		song += [[note, '4']]
-		music.pitch(notes[note + '4'], 500)
-	elif(button_b.get_presses() != 0):
-		song += [[note, '5']]
-		music.pitch(notes[note + '5'], 500)
+	if(a or b):
+		if note == 'X':
+			if song:
+				pitch = song[-1]
+				del song[-1]
+				display.show(Image(letters[pitch[0]]))
+				music.pitch(200, 200)
+			else:
+				music.pitch(200, 200)
+		else:
+			song += [pitch]
+			music.pitch(notes[''.join(pitch)], 500)
 	elif accelerometer.was_gesture('face down'):
 		for note in song:
-			music.pitch(notes[note[0] + note[1]], 500)
 			display.show(Image(letters[note[0]]))
-	elif accelerometer.was_gesture('shake'):
-		del song[-1]
+			music.pitch(notes[note[0] + note[1]], 500)
 
